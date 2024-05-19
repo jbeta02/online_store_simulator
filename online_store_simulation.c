@@ -5,7 +5,8 @@
 #include <sys/wait.h>
 #include <stdlib.h>
 #include <pthread.h>
-#include "game_summary.c"
+#include "game_summary.h"
+#include "customer.c"
 
 int principle;
 struct Customer* customers[30];
@@ -123,6 +124,7 @@ struct Customer* populateCustomer(char* name_, int mIncome, char brandPer) {
     return customer;
 }
 
+// free heap
 void destroyCustomers() {
     for (int i = 0; i < sizeof(customers)/sizeof(struct Customer*); i++) {
         if (customers[i] == NULL)
@@ -130,7 +132,6 @@ void destroyCustomers() {
         
         free(customers[i]);
     }
-    free(customers);
 }
 
 void purchase(struct Customer* customer) {
@@ -145,12 +146,10 @@ void purchase(struct Customer* customer) {
 }
 
 void* cashflow(void *) {
-    //int* principle = (int*) principleAmount;
 
     // clean up buffer
     fflush(stdout);
 
-    //struct Customer* customers[] = {populateCustomer("John", 2500, 1300, 'A'), populateCustomer("Dav", 3000, 1000, 'B'), populateCustomer("Mike", 1000, 200, 'C')};
     int week = 1;
     for (int days = 0; days < 30; days++) {
         if (days % 7 == 0) { // check if week has passed
@@ -245,7 +244,7 @@ int main() { // first last principle
     wait(NULL);
 
     // print game balance and summary
-    printf("principle: %d", principle);
+    printf("principle: %d\n", principle);
     display();
     pthread_mutex_destroy(&mutex);
     destroyCustomers();
