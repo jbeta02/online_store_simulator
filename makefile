@@ -1,12 +1,11 @@
-main: online_store_simulation.o customer.o display.o
-	gcc -o main online_store_simulation.o customer.o display.o -lm
+main: online_store_simulation.o customer.o game_summary.o
+	gcc -o main online_store_simulation.o customer.o game_summary.o -lm
 
-online_store_simulation.o: online_store_simulation.c
+online_store_simulation.o: online_store_simulation.c customerStruct.h
 	gcc -c online_store_simulation.c -lpthread
 
 customer.o: customer.c
 	gcc -c customer.c -lpthread
 
-display.o: display.c display.h
-	gcc -c display.c
-
+game_summary.o: game_summary.c game_summary.h customerStruct.h
+	gcc -c game_summary.c

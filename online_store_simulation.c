@@ -7,6 +7,7 @@
 #include <pthread.h>
 #include "game_summary.h"
 #include "customer.c"
+#include "customerStruct.h"
 
 int principle;
 struct Customer* customers[30];
@@ -19,14 +20,6 @@ int getRandom() {
     
     return randomNum;
 }
-
-struct Customer {
-    char name[20];
-    int monthlyIncome; // available 30k: 2500 ,  100k: 8300
-    int weeklyfreeCash; // mIncome / 4 * 0.x where x is random int (free cash is a percent of total cash per day)
-    int dailyFreeCash; // dCash / 7 
-    char brandPerception; // A, B, C, D, F
-};
 
 float getPerceptionNum(struct Customer* customer) {
     char brandPer = customer->brandPerception;
@@ -172,7 +165,7 @@ void* cashflow(void *) {
                 break;
             purchase(customers[i]);
         }
-        sleep(1); // one day is 1 second
+        //sleep(1); // one day is 1 second
     }
     
     return NULL;
@@ -221,6 +214,9 @@ void* gamePrompt() {
 int main() { // first last principle
 
     pthread_mutex_init(&mutex, NULL);
+    int fd[2]; // file descriptor [0] read, [1] write
+    pipe(fd);
+
     int pid = fork();
 
     customers[0] = populateCustomer("John", 2500, 'F'), 
@@ -228,9 +224,9 @@ int main() { // first last principle
     customers[2] = populateCustomer("Mike", 1000, 'F');
     customers[3] = populateCustomer("Ash", 2300, 'F');
     customers[4] = populateCustomer("Leo", 1500, 'F');
-    // create pipe to read from customers in parent after wait (for game summeary purposes)
     
     if (pid == 0) { // check if in child
+        close(fd[0]); // close read since won't be reading in this child
         // create threads
         int status;
         pthread_t t1_id, t2_id;
@@ -239,15 +235,31 @@ int main() { // first last principle
         pthread_create(&t2_id, NULL, gamePrompt, NULL);
         pthread_join(t1_id, NULL);
         pthread_join(t2_id, NULL);
+        printf("in child\n");
+
+        for (int i = 0; i < sizeof(customers)/sizeof(struct Customer*); i++) {
+            if (customers[i] == NULL)
+                break;
+            display(customers[i]);
+            printFile(customers[i]);
+        }
+        write(fd[1], &principle, sizeof(int));
+        close(fd[1]);
     }
 
     wait(NULL);
 
-    // print game balance and summary
-    printf("principle: %d\n", principle);
-    display();
-    pthread_mutex_destroy(&mutex);
-    destroyCustomers();
+    if (pid > 0){
+        close(fd[1]);
+        // print game balance and summary
+        printf("in parent\n");
+        read(fd[0], &principle, sizeof(int));
+        close(fd[0]);
+        printf("principle: %d\n", principle);
+        pthread_mutex_destroy(&mutex);
+        destroyCustomers();
+    }
+
     return 0;
 }
 
