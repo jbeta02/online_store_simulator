@@ -16,6 +16,7 @@ int getRandom() {
     return randomNum;
 }
 
+// convert char to useful int
 float getPerceptionNum(struct Customer *customer) {
     char brandPer = customer->brandPerception;
     int per = 0;
@@ -92,6 +93,7 @@ void incrementPerception(struct Customer *customer, int inc) {
     customer->dailyFreeCash = (customer->weeklyfreeCash) / 7 * per/10;
 }
 
+// update daily cash taking into account brand perception
 void recalcDailyCash(struct Customer *customer) {
     customer->dailyFreeCash = (customer->weeklyfreeCash) / 7 * getPerceptionNum(customer)/10;
 }
@@ -122,8 +124,8 @@ void destroyCustomers() {
     }
 }
 
+// update relavent values from purchase
 void purchase(struct Customer *customer) {
-
     if (customer->weeklyfreeCash > customer->dailyFreeCash && customer->monthlyIncome > customer->dailyFreeCash) { // check if there is enough money
         principle = principle + customer->dailyFreeCash;
         customer->monthlyIncome = customer->monthlyIncome - customer->dailyFreeCash;
