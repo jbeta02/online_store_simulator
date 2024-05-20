@@ -16,7 +16,7 @@ int getRandom() {
     return randomNum;
 }
 
-float getPerceptionNum(struct Customer* customer) {
+float getPerceptionNum(struct Customer *customer) {
     char brandPer = customer->brandPerception;
     int per = 0;
     switch (brandPer)
@@ -41,7 +41,7 @@ float getPerceptionNum(struct Customer* customer) {
 }
 
 // change percetpion customer has on store
-void changePerception(struct Customer* customer, char newPer) {
+void changePerception(struct Customer *customer, char newPer) {
     int per = 0;
     switch (newPer)
     {
@@ -67,7 +67,7 @@ void changePerception(struct Customer* customer, char newPer) {
 }
 
 // change percetpion customer has on store
-void incrementPerception(struct Customer* customer, int inc) {
+void incrementPerception(struct Customer *customer, int inc) {
     int per = getPerceptionNum(customer) + inc;
     char brandP = 'A';
     switch (per)
@@ -92,12 +92,12 @@ void incrementPerception(struct Customer* customer, int inc) {
     customer->dailyFreeCash = (customer->weeklyfreeCash) / 7 * per/10;
 }
 
-void recalcDailyCash(struct Customer* customer) {
+void recalcDailyCash(struct Customer *customer) {
     customer->dailyFreeCash = (customer->weeklyfreeCash) / 7 * getPerceptionNum(customer)/10;
 }
 
 // populate customer fields
-struct Customer* populateCustomer(char* name_, int mIncome, char brandPer) {
+struct Customer* populateCustomer(char *name_, int mIncome, char brandPer) {
     // use malloc to allocate space on the heap and edit fields using pointers
     struct Customer* customer = (struct Customer *) malloc(sizeof(struct Customer));
     strcpy(customer->name, name_);
@@ -122,7 +122,7 @@ void destroyCustomers() {
     }
 }
 
-void purchase(struct Customer* customer) {
+void purchase(struct Customer *customer) {
 
     if (customer->weeklyfreeCash > customer->dailyFreeCash && customer->monthlyIncome > customer->dailyFreeCash) { // check if there is enough money
         principle = principle + customer->dailyFreeCash;

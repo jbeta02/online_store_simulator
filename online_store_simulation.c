@@ -10,7 +10,7 @@
 #include "customerStruct.h"
 
 int principle;
-struct Customer* customers[30];
+struct Customer *customers[30];
 pthread_mutex_t mutex;
 
 void* cashflow(void *) {
@@ -40,7 +40,7 @@ void* cashflow(void *) {
                 break;
             purchase(customers[i]);
         }
-        //sleep(1); // one day is 1 second
+        sleep(1); // one day is 1 second
     }
     
     return NULL;
