@@ -55,7 +55,7 @@ void* gamePrompt() {
     int adCost = 300;
     int qualityCost = 100;
     // loop prompt
-    while (option != 2) {
+    while (option != 3) {
         printf(
         "\n1) Increase advertisement spending (increase number customers) (-$%d)\n"
         "2) Increase quality of store (increase brand percepton of all customers by 1 grade) (-$%d)\n"
